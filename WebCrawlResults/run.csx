@@ -10,6 +10,8 @@ using System.Net.Http.Headers;
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
+	// Hello World - integration test
+	
     log.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
 
     // parse query parameter
