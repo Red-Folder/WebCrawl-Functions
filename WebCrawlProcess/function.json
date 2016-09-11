@@ -1,0 +1,21 @@
+{
+  "bindings": [
+    {
+      "name": "crawlRequestId",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "towebcrawl",
+      "connection": "rfcwebcrawl_STORAGE"
+    },
+    {
+      "type": "documentDB",
+      "name": "outputDocument",
+      "databaseName": "crawlOutput",
+      "collectionName": "WebCrawl",
+      "createIfNotExists": true,
+      "connection": "rfcwebcrawl_DOCUMENTDB",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}
