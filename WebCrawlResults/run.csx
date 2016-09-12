@@ -42,22 +42,23 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
     log.Info("Running LINQ query...");
-    CrawlResults results;
+    IEnumerable<CrawlResults> query;
     if (id == null || id.Length == 0)
     {
-        results = client.CreateDocumentQuery<CrawlResults>(UriFactory
+        query = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
                     .OrderByDescending(f => f.Timestamp)
-                    .FirstOrDefault();
+                    .Take(1);
     }
     else
     {
-        results = client.CreateDocumentQuery<CrawlResults>(UriFactory
+        query = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
                     .Where(f => f.Id == id)
-                    .FirstOrDefault();
+                    .Take(1);
     }
 
+    var results = query.FirstOrDefault();
     string message = JsonConvert.SerializeObject(results);
     var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
