@@ -10,20 +10,18 @@ using System.Net.Http.Headers;
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
-	// Hello World - integration test
-	
     log.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
 
     // parse query parameter
-    string name = req.GetQueryNameValuePairs()
-        .FirstOrDefault(q => string.Compare(q.Key, "name", true) == 0)
+    string id = req.GetQueryNameValuePairs()
+        .FirstOrDefault(q => string.Compare(q.Key, "id", true) == 0)
         .Value;
 
     // Get request body
     dynamic data = await req.Content.ReadAsAsync<object>();
 
-    // Set name to query string or body data
-    name = name ?? data?.name;
+    // Set id to query string or body data
+    id = id ?? data?.id;
 
     // Convert from connection string to uri & key
     // Doesn't currently appear to be a vary to create a DocumentClient from a connection string
@@ -43,26 +41,27 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     // Set some common query options
     FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-    IQueryable query = client.CreateDocumentQuery(
-            UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions);
-            //.Where(f => f.LastName == "Andersen");
+    IQueryable query;
+    if (id == null || id.Length == 0)
+    {
+        query = client.CreateDocumentQuery(UriFactory
+                .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+                .OrderByDescending(f => f.timestamp)
+                .FirstOrDefault();
+    }
+    else
+    {
+        query = client.CreateDocumentQuery(UriFactory
+                .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+                .Where(f => f.id == id)
+                .FirstOrDefault();
+    }
 
     // The query is executed synchronously here, but can also be executed asynchronously via the IDocumentQuery<T> interface
     log.Info("Running LINQ query...");
-    dynamic result = null;
-    foreach (var rec in query)
-    {
-        log.Info("Rec found");
-        log.Info(rec.ToString());
-        result = rec;
-    }
+    dynamic result = query;
     
-    var result2 = new {
-      id = 12,
-      message = "Hello World"
-    };
-    
-    string message = JsonConvert.SerializeObject(result2);
+    string message = JsonConvert.SerializeObject(result);
     var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(message)
