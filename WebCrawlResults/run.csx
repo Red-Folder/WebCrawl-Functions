@@ -1,5 +1,4 @@
-//#r "Newtonsoft.Json"
-
+#r "Red-Folder.WebCrawl.dll"
 
 using System.Net;
 using Microsoft.Azure.Documents;
@@ -7,6 +6,7 @@ using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
+using Red_Folder.WebCrawl.Models;
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
@@ -41,27 +41,24 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     // Set some common query options
     FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-    IQueryable query;
+    log.Info("Running LINQ query...");
+    CrawlResults results;
     if (id == null || id.Length == 0)
     {
-        query = client.CreateDocumentQuery(UriFactory
-                .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                .OrderByDescending(f => f.timestamp)
-                .FirstOrDefault();
+        results = client.CreateDocumentQuery<CrawlResults>(UriFactory
+                    .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+                    .OrderByDescending(f => f.Timestamp)
+                    .FirstOrDefault();
     }
     else
     {
-        query = client.CreateDocumentQuery(UriFactory
-                .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                .Where(f => f.id == id)
-                .FirstOrDefault();
+        results = client.CreateDocumentQuery<CrawlResults>(UriFactory
+                    .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+                    .Where(f => f.id == Id)
+                    .FirstOrDefault();
     }
 
-    // The query is executed synchronously here, but can also be executed asynchronously via the IDocumentQuery<T> interface
-    log.Info("Running LINQ query...");
-    dynamic result = query;
-    
-    string message = JsonConvert.SerializeObject(result);
+    string message = JsonConvert.SerializeObject(results);
     var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(message)
