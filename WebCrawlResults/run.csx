@@ -54,7 +54,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     {
         results = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .Where(f => f.id == Id)
+                    .Where(f => f.Id == id)
                     .FirstOrDefault();
     }
 
