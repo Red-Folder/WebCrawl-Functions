@@ -41,24 +41,29 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     // Set some common query options
     FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-    log.Info("Running LINQ query...");
+    log.Info("Setting up the LINQ query...");
     IEnumerable<CrawlResults> query;
     if (id == null || id.Length == 0)
     {
         query = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .OrderByDescending(f => f.Timestamp)
-                    .Take(1);
+                    .OrderByDescending(f => f.Timestamp);
     }
     else
     {
         query = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .Where(f => f.Id == id)
-                    .Take(1);
+                    .Where(f => f.Id == id);
     }
 
+    log.Info("Running LINQ query...");
     var results = query.FirstOrDefault();
+
+    if (results == null)
+    {
+        log.Info("Empty results");
+    }
+
     string message = JsonConvert.SerializeObject(results);
     var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
