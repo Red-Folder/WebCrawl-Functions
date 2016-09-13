@@ -35,8 +35,6 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
     log.Info($"Creating client for: {endpointUri}");
     client = new DocumentClient(new Uri(endpointUri), primaryKey);
-    await client.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(databaseName));
-    await client.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName));
 
     // Set some common query options
     FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
@@ -47,19 +45,19 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     {
         query = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .OrderByDescending(f => f.Timestamp);
+                    .OrderByDescending(x => x.Timestamp);
     }
     else
     {
         query = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .Where(f => f.Id == id);
+                    .Where(x => x.Id == id);
     }
 
     log.Info("Running LINQ query...");
     var results = query.FirstOrDefault();
 
-    if (results == null)
+    if (results == null || results.length == 0)
     {
         log.Info("Empty results");
     }
