@@ -55,7 +55,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     }
 
     log.Info("Running LINQ query...");
-    var results = query.FirstOrDefault();
+    var results = query.ToList().FirstOrDefault();
 
     if (results == null || results.length == 0)
     {
