@@ -55,14 +55,17 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     }
 
     log.Info("Running LINQ query...");
-    var results = query.ToList().FirstOrDefault();
-
-    if (results == null || results.length == 0)
+    string message = "";
+    try
     {
-        log.Info("Empty results");
+        var results = query.ToList().FirstOrDefault();
+        message = JsonConvert.SerializeObject(results);
+    }
+    catch (Exception ex)
+    {
+        log.Info($"Failed to retrieve results - exception thrown - {0}", ex.Message);
     }
 
-    string message = JsonConvert.SerializeObject(results);
     var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(message)
