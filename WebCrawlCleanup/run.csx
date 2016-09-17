@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Red_Folder.WebCrawl.Data;
 
-public static async Task<HttpResponseMessage> Run(TimerInfo timerInfo, TraceWriter log)
+public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 {
     log.Info($"Web Crawl Clean up triggered");
 
@@ -44,7 +44,7 @@ public static async Task<HttpResponseMessage> Run(TimerInfo timerInfo, TraceWrit
 			.FirstOrDefault();
 
 		//First execution of the query
-		var results = client.CreateDocumentQuery<Document>(coll.DocumentsLink, sqlQuery).AsDocumentQuery();
+		var results = client.CreateDocumentQuery<CrawlResults>(coll.DocumentsLink, sqlQuery).AsDocumentQuery();
 		
         //var query = client.CreateDocumentQuery<CrawlResults>(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
         //            .OrderBy(x => x.Timestamp)
@@ -53,7 +53,7 @@ public static async Task<HttpResponseMessage> Run(TimerInfo timerInfo, TraceWrit
 		
 		while (results.HasMoreResults)
 		{
-			foreach (Document doc in results.ExecuteNextAsync())
+			foreach (CrawlResults doc in await results.ExecuteNextAsync())
 			{
 				log.Info($"Deleting document {0}", doc.id);
 				//await client.DeleteDocumentAsync(doc.SelfLink);
