@@ -1,12 +1,10 @@
-#r "Red-Folder.WebCrawl.dll"
-
 using System.Net;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
-using Red_Folder.WebCrawl.Models;
+using Red_Folder.WebCrawl.Data;
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
@@ -58,6 +56,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     string message = "";
     try
     {
+        // TODO - Need to check the quantity that come back.  If 1 then ok.  If not, then we need to return not found (or similar)
         var results = query.ToList().FirstOrDefault();
         message = JsonConvert.SerializeObject(results);
     }
