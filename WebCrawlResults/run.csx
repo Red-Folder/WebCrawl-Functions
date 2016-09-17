@@ -74,6 +74,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 				{
 					Content = new StringContent(message)
 				};
+			response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 		}
     }
     catch (Exception ex)
