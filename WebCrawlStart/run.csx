@@ -12,6 +12,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
     var requestId = Guid.NewGuid();
     
+	HttpResponseMessage response = null;
     try
     {
         string storageConnectionString = System.Environment.GetEnvironmentVariable("APPSETTING_rfcwebcrawl_STORAGE");
@@ -39,10 +40,22 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         log.Info("Add the message");
         queue.AddMessage(message);
         
-        return req.CreateResponse(HttpStatusCode.OK, requestId); 
+		var result = new { id = requestId };
+
+		var message = JsonConvert.SerializeObject(result);
+		log.Info("Returning OK");
+		response = new HttpResponseMessage(HttpStatusCode.OK)
+			{
+				Content = new StringContent(message)
+			};
+		response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
     } catch (Exception ex) {
-        log.Error(ex.Message);
-        return req.CreateResponse(HttpStatusCode.InternalServerError, ex.Message); 
+		log.Info($"Failed to handle request - exception thrown - {0}", ex.Message);
+		response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+			{
+				Content = new StringContent("An error has occurred.  Refer to the server logs.")
+			};
     }
     
+	return response;
 }
