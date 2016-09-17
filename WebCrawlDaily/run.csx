@@ -43,7 +43,7 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
         log.Info("Add the message");
         queue.AddMessage(message);
         
-		log.Info($"Completed - added key {0}", requestId);
+		log.Info($"Completed - added key {0}", requestId.ToString());
     } catch (Exception ex) {
 		log.Info($"Failed to handle request - exception thrown - {0}", ex.Message);
     }
