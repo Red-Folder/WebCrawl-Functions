@@ -39,12 +39,16 @@ public static async Task<HttpResponseMessage> Run(TimerInfo timerInfo, TraceWrit
         var query = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
                     .OrderBy(x => x.Timestamp)
-					.Take(docCount - 13);
-					
-		foreach (var doc in query)
+					.Take(docCount - 13)
+					.AsDocumentQuery();
+		
+		while (query.HasMoreResults)
 		{
-			log.Info($"Deleting document {0}", doc.Id);
-			await client.DeleteDocumentAsync(doc.SelfLink);
+			foreach (var doc in query.ExecuteNextAsync())
+			{
+				log.Info($"Deleting document {0}", doc.Id);
+				await client.DeleteDocumentAsync(doc.SelfLink);
+			}
 		}
 	}
 	
