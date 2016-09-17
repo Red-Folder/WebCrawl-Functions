@@ -35,19 +35,27 @@ public static async Task<HttpResponseMessage> Run(TimerInfo timerInfo, TraceWrit
 	if (docCount > 1)
 	{
 		log.Info("Setting up the LINQ query to get all docs except latest ...");
-		IEnumerable<CrawlResults> query;
-        var query = client.CreateDocumentQuery<CrawlResults>(UriFactory
-                    .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .OrderBy(x => x.Timestamp)
-					.Take(docCount - 13)
-					.AsDocumentQuery();
+		var sqlQuery = String.Format("select top {0} from c order by c.timestamp", docCount - 13);
+
+		//Get a reference to the collection
+		DocumentCollection coll = client.CreateDocumentCollectionQuery(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+			.ToArray()
+			.FirstOrDefault();
+
+		//First execution of the query
+		var results = client.CreateDocumentQuery<Document>(coll.DocumentsLink, sqlQuery).AsDocumentQuery();
 		
-		while (query.HasMoreResults)
+        //var query = client.CreateDocumentQuery<CrawlResults>(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+        //            .OrderBy(x => x.Timestamp)
+		//				.Take(docCount - 13)
+		//			.AsDocumentQuery();
+		
+		while (results.HasMoreResults)
 		{
-			foreach (var doc in query.ExecuteNextAsync())
+			foreach (Document doc in results.ExecuteNextAsync())
 			{
-				log.Info($"Deleting document {0}", doc.Id);
-				await client.DeleteDocumentAsync(doc.SelfLink);
+				log.Info($"Deleting document {0}", doc.id);
+				//await client.DeleteDocumentAsync(doc.SelfLink);
 			}
 		}
 	}
