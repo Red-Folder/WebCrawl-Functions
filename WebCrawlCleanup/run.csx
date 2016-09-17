@@ -59,7 +59,7 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 				
 				Uri docUri = UriFactory.CreateDocumentUri(databaseName, collectionName, doc.Id);
 
-				log.Info($"Uri = {0}", docUri);
+				log.Info($"Uri = {0}", docUri.ToString());
 				// Use this constructed Uri to delete the document
 				//await client.DeleteDocumentAsync(docUri);
 
