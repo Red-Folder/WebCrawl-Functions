@@ -15,7 +15,6 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 
     var requestId = Guid.NewGuid();
     
-	HttpResponseMessage response = null;
     try
     {
         string storageConnectionString = System.Environment.GetEnvironmentVariable("APPSETTING_rfcwebcrawl_STORAGE");
