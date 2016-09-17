@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.Storage.Queue; // Namespace for Queue storage types
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
-public static async Task Run(TimeTrigger timer, TraceWriter log)
+public static async Task Run(TraceWriter log)
 {
     log.Info($"Request to start WebCrawl");
 
