@@ -5,6 +5,7 @@ using System.Net;
 using Microsoft.Azure; // Namespace for CloudConfigurationManager 
 using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
 using Microsoft.WindowsAzure.Storage.Queue; // Namespace for Queue storage types
+using Newtonsoft.Json;
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
@@ -40,13 +41,10 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         log.Info("Add the message");
         queue.AddMessage(message);
         
-		var result = new { id = requestId };
-
-		var message = JsonConvert.SerializeObject(result);
 		log.Info("Returning OK");
 		response = new HttpResponseMessage(HttpStatusCode.OK)
 			{
-				Content = new StringContent(message)
+				Content = new StringContent(JsonConvert.SerializeObject(new {id = requestId}))
 			};
 		response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
     } catch (Exception ex) {
