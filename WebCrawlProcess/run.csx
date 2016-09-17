@@ -1,6 +1,6 @@
 using System;
 using Red_Folder.WebCrawl;
-using Red_Folder.Logger;
+using Red_Folder.Logging;
 
 public static void Run(string crawlRequestId, out object outputDocument, TraceWriter log)
 {
