@@ -67,6 +67,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 	HttpResponseMessage response = null;
 	if (message == null || message.Length == 0)
 	{
+		log.Info("Returning NotFound");
 		response = new HttpResponseMessage(HttpStatusCode.NotFound)
 		{
             Content = new StringContent("No results found.  If asking for a specific request, try again in 60 seconds as it may still be running.")
@@ -74,6 +75,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 	}
 	else
 	{
+		log.Info("Returning OK");
 		response = new HttpResponseMessage(HttpStatusCode.OK)
 		{
             Content = new StringContent(message)
