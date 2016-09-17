@@ -65,7 +65,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     }
 
 	HttpResponseMessage response = null;
-	if (message == null)
+	if (message == null || message.length == 0)
 	{
 		response = new HttpResponseMessage(HttpStatusCode.NotFound)
 		{
