@@ -31,7 +31,7 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
                     .ToList()
 					.Count();
 
-	log.Info($"Total of {0} documents found");
+	log.Info(String.Format("Total of {0} documents found", docCount));
 	
 	if (docCount > 1)
 	{
@@ -55,11 +55,11 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 		{
 			foreach (CrawlResults doc in await results.ExecuteNextAsync())
 			{
-				log.Info($"Deleting document {0}", doc.Id);
+				log.Info(String.Format("Deleting document {0}", doc.Id));
 				
 				Uri docUri = UriFactory.CreateDocumentUri(databaseName, collectionName, doc.Id);
 
-				log.Info($"Uri = {0}", docUri.ToString());
+				log.Info(String.Format("Uri = {0}", docUri.ToString()));
 				// Use this constructed Uri to delete the document
 				//await client.DeleteDocumentAsync(docUri);
 
