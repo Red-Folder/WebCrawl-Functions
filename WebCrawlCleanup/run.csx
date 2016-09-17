@@ -55,7 +55,8 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 		{
 			foreach (CrawlResults doc in await results.ExecuteNextAsync())
 			{
-				log.Info($"Deleting document {0}", doc.id);
+				log.Info($"Deleting document {0}", doc.Id);
+				log.Info($"Selflink = {0}", ((Document)doc).SelfLink);
 				//await client.DeleteDocumentAsync(doc.SelfLink);
 			}
 		}
