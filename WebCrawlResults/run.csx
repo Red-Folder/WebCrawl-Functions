@@ -53,35 +53,38 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     }
 
     log.Info("Running LINQ query...");
-    string message = "";
+	HttpResponseMessage response = null;
     try
     {
-        var results = query.ToList().FirstOrDefault();
-        message = JsonConvert.SerializeObject(results);
+        var results = query.ToList();
+		if (results.Count() == 0)
+		{
+			log.Info("No results found");
+			response = new HttpResponseMessage(HttpStatusCode.NotFound)
+				{
+					Content = new StringContent("No results found.  If asking for a specific request, try again in 60 seconds as it may still be running.")
+				};
+		}
+		else
+		{
+			var result = results.FirstOrDefault();
+			var message = JsonConvert.SerializeObject(results);
+			log.Info("Returning OK");
+			response = new HttpResponseMessage(HttpStatusCode.OK)
+				{
+					Content = new StringContent(message)
+				};
+		}
     }
     catch (Exception ex)
     {
         log.Info($"Failed to retrieve results - exception thrown - {0}", ex.Message);
+		response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+			{
+				Content = new StringContent("An error has occurred.  Refer to the server logs.")
+			};
     }
 
-	HttpResponseMessage response = null;
-	if (message == null || message.Length == 0)
-	{
-		log.Info("Returning NotFound");
-		response = new HttpResponseMessage(HttpStatusCode.NotFound)
-		{
-            Content = new StringContent("No results found.  If asking for a specific request, try again in 60 seconds as it may still be running.")
-        };
-	}
-	else
-	{
-		log.Info("Returning OK");
-		response = new HttpResponseMessage(HttpStatusCode.OK)
-		{
-            Content = new StringContent(message)
-        };
-	}
-	
     return response;
 }
 
