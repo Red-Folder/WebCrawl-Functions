@@ -64,16 +64,17 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         log.Info($"Failed to retrieve results - exception thrown - {0}", ex.Message);
     }
 
+	var response = null;
 	if (message == null)
 	{
-		var response = new HttpResponseMessage(HttpStatusCode.NotFound)
+		response = new HttpResponseMessage(HttpStatusCode.NotFound)
 		{
             Content = new StringContent("No results found.  If asking for a specific request, try again in 60 seconds as it may still be running.")
         };
 	}
 	else
 	{
-		var response = new HttpResponseMessage(HttpStatusCode.OK)
+		response = new HttpResponseMessage(HttpStatusCode.OK)
 		{
             Content = new StringContent(message)
         };
