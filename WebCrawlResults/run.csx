@@ -56,7 +56,6 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     string message = "";
     try
     {
-        // TODO - Need to check the quantity that come back.  If 1 then ok.  If not, then we need to return not found (or similar)
         var results = query.ToList().FirstOrDefault();
         message = JsonConvert.SerializeObject(results);
     }
@@ -65,11 +64,21 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         log.Info($"Failed to retrieve results - exception thrown - {0}", ex.Message);
     }
 
-    var response = new HttpResponseMessage(HttpStatusCode.OK)
-        {
+	if (message == null)
+	{
+		var response = new HttpResponseMessage(HttpStatusCode.NotFound)
+		{
+            Content = new StringContent("No results found.  If asking for a specific request, try again in 60 seconds as it may still be running.")
+        };
+	}
+	else
+	{
+		var response = new HttpResponseMessage(HttpStatusCode.OK)
+		{
             Content = new StringContent(message)
         };
-
+	}
+	
     return response;
 }
 
