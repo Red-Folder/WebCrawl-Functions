@@ -29,7 +29,7 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 	var docCount = client.CreateDocumentQuery<CrawlResults>(UriFactory
                     .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
                     .ToList()
-					.Count();
+					.Count;
 
 	log.Info(String.Format("Total of {0} documents found", docCount));
 	
@@ -55,13 +55,12 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 		{
 			foreach (CrawlResults doc in await results.ExecuteNextAsync())
 			{
-				log.Info(String.Format("Deleting document {0}", doc.Id));
+				log.Info(String.Format("Deleting document {0}", doc.Id.ToString()));
 				
 				Uri docUri = UriFactory.CreateDocumentUri(databaseName, collectionName, doc.Id);
 
-				log.Info(String.Format("Uri = {0}", docUri.ToString()));
 				// Use this constructed Uri to delete the document
-				//await client.DeleteDocumentAsync(docUri);
+				await client.DeleteDocumentAsync(docUri);
 
 				//log.Info($"Selflink = {0}", ((Document)doc).SelfLink);
 				//await client.DeleteDocumentAsync(doc.SelfLink);
