@@ -36,27 +36,34 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 	if (docCount > 1)
 	{
 		log.Info("Setting up the LINQ query to get all docs except latest ...");
-		var sqlQuery = String.Format("select top {0} from c order by c.timestamp", docCount - 13);
+		//var sqlQuery = String.Format("select top {0} from c order by c.timestamp", docCount - 13);
 
 		//Get a reference to the collection
-		DocumentCollection coll = client.CreateDocumentCollectionQuery(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-			.ToArray()
-			.FirstOrDefault();
+		//DocumentCollection coll = client.CreateDocumentCollectionQuery(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), //queryOptions)
+		//	.ToArray()
+		//	.FirstOrDefault();
 
 		//First execution of the query
-		var results = client.CreateDocumentQuery<CrawlResults>(coll.DocumentsLink, sqlQuery).AsDocumentQuery();
+		//var results = client.CreateDocumentQuery<CrawlResults>(coll.DocumentsLink, sqlQuery).AsDocumentQuery();
 		
-        //var query = client.CreateDocumentQuery<CrawlResults>(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-        //            .OrderBy(x => x.Timestamp)
-		//				.Take(docCount - 13)
-		//			.AsDocumentQuery();
+        var results = client.CreateDocumentQuery<CrawlResults>(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+						.OrderBy(x => x.Timestamp)
+						.Take(docCount - 13)
+						.AsDocumentQuery();
 		
 		while (results.HasMoreResults)
 		{
 			foreach (CrawlResults doc in await results.ExecuteNextAsync())
 			{
 				log.Info($"Deleting document {0}", doc.Id);
-				log.Info($"Selflink = {0}", ((Document)doc).SelfLink);
+				
+				Uri docUri = UriFactory.CreateDocumentUri(databaseName, collectionName, doc.Id);
+
+				log.Info($"Uri = {0}", docUri);
+				// Use this constructed Uri to delete the document
+				//await client.DeleteDocumentAsync(docUri);
+
+				//log.Info($"Selflink = {0}", ((Document)doc).SelfLink);
 				//await client.DeleteDocumentAsync(doc.SelfLink);
 			}
 		}
