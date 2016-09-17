@@ -68,7 +68,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 		else
 		{
 			var result = results.FirstOrDefault();
-			var message = JsonConvert.SerializeObject(results);
+			var message = JsonConvert.SerializeObject(result);
 			log.Info("Returning OK");
 			response = new HttpResponseMessage(HttpStatusCode.OK)
 				{
