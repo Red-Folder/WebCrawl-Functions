@@ -64,7 +64,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         log.Info($"Failed to retrieve results - exception thrown - {0}", ex.Message);
     }
 
-	var response = null;
+	HttpRequestMessage response = null;
 	if (message == null)
 	{
 		response = new HttpResponseMessage(HttpStatusCode.NotFound)
