@@ -8,9 +8,9 @@ public static void Run(string crawlRequestId, out object outputDocument, TraceWr
     
 	var azureLogger = new AzureLogger(log);
 	
-    var crawler = new Crawler(azureLogger);
+    var crawler = new Crawler(crawlRequestId, "https://www.red-folder.com", azureLogger);
     crawler.AddUrl("https://www.red-folder.com/sitemap.xml");
-    var crawlResult = crawler.Crawl(crawlRequestId);
+    var crawlResult = crawler.Crawl();
     
     outputDocument = crawlResult;
 }
