@@ -3,7 +3,7 @@
     "net46":{
       "dependencies": {
         "Microsoft.Azure.DocumentDB": "1.9.5",
-		"Red-Folder.WebCrawl.Data": "0.1.0"
+		    "Red-Folder.WebCrawl.Data": "0.1.87"
       }
     }
    }

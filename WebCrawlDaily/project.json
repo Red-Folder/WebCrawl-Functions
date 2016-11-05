@@ -1,0 +1,9 @@
+{
+  "frameworks": {
+    "net46":{
+      "dependencies": {
+        "Red-Folder.WebCrawl.Data": "0.1.87"
+      }
+    }
+   }
+} 

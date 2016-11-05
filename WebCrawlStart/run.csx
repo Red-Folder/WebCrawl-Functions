@@ -9,11 +9,13 @@ using Microsoft.WindowsAzure.Storage.Queue; // Namespace for Queue storage types
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
+using Red_Folder.WebCrawl.Data;
+
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
     log.Info($"Request to start WebCrawl");
 
-    var requestId = Guid.NewGuid();
+    var crawlRequest = new CrawlRequest(Guid.NewGuid().ToString(), "https://www.red-folder.com");
     
 	HttpResponseMessage response = null;
     try
@@ -38,7 +40,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
         // Create a message and add it to the queue.
         log.Info("Create the message");
-        CloudQueueMessage message = new CloudQueueMessage(requestId.ToString());
+        CloudQueueMessage message = new CloudQueueMessage(crawlRequest);
 
         log.Info("Add the message");
         queue.AddMessage(message);
@@ -46,7 +48,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 		log.Info("Returning OK");
 		response = new HttpResponseMessage(HttpStatusCode.OK)
 			{
-				Content = new StringContent(JsonConvert.SerializeObject(new {id = requestId}))
+				Content = new StringContent(JsonConvert.SerializeObject(crawlRequest))
 			};
 		response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
     } catch (Exception ex) {

@@ -9,11 +9,13 @@ using Microsoft.WindowsAzure.Storage.Queue; // Namespace for Queue storage types
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
+using Red_Folder.WebCrawl.Data;
+
 public static async Task Run(TimerInfo timerInfo, TraceWriter log)
 {
     log.Info($"Request to start WebCrawl");
 
-    var requestId = Guid.NewGuid();
+    var crawlRequest = new CrawlRequest(Guid.NewGuid().ToString(), "https://www.red-folder.com");
     
     try
     {
