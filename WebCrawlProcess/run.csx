@@ -12,7 +12,7 @@ public static void Run(string request, out object outputDocument, TraceWriter lo
     
 	var azureLogger = new AzureLogger(log);
 	
-	var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request)
+	var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
 
     var crawler = new Crawler(crawlRequest, azureLogger);
     crawler.AddUrl("https://www.red-folder.com/sitemap.xml");
