@@ -39,12 +39,12 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
     
         // Create a message and add it to the queue.
         log.Info("Create the message");
-        CloudQueueMessage message = new CloudQueueMessage(requestId.ToString());
+        CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(crawlRequest));
 
         log.Info("Add the message");
         queue.AddMessage(message);
         
-		log.Info($"Completed - added key {0}", requestId.ToString());
+		log.Info($"Completed - added key {0}", crawlRequest.Id);
     } catch (Exception ex) {
 		log.Info($"Failed to handle request - exception thrown - {0}", ex.Message);
     }

@@ -40,7 +40,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
         // Create a message and add it to the queue.
         log.Info("Create the message");
-        CloudQueueMessage message = new CloudQueueMessage(crawlRequest);
+        CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(crawlRequest));
 
         log.Info("Add the message");
         queue.AddMessage(message);
