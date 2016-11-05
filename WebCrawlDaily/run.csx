@@ -44,8 +44,8 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
         log.Info("Add the message");
         queue.AddMessage(message);
         
-		log.Info($"Completed - added key {0}", crawlRequest.Id);
+		log.Info($"Completed - added key {crawlRequest.Id}");
     } catch (Exception ex) {
-		log.Info($"Failed to handle request - exception thrown - {0}", ex.Message);
+		log.Info($"Failed to handle request - exception thrown - {ex.Message}");
     }
 }

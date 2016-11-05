@@ -79,7 +79,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     }
     catch (Exception ex)
     {
-        log.Info($"Failed to retrieve results - exception thrown - {0}", ex.Message);
+        log.Info($"Failed to retrieve results - exception thrown - {ex.Message}");
 		response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
 			{
 				Content = new StringContent("An error has occurred.  Refer to the server logs.")

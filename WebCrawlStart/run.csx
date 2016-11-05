@@ -52,7 +52,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 			};
 		response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
     } catch (Exception ex) {
-		log.Info($"Failed to handle request - exception thrown - {0}", ex.Message);
+		log.Info($"Failed to handle request - exception thrown - {ex.Message}");
 		response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
 			{
 				Content = new StringContent("An error has occurred.  Refer to the server logs.")
