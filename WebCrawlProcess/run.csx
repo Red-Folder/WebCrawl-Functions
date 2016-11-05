@@ -8,14 +8,13 @@ using Newtonsoft.Json;
 
 public static void Run(string request, out object outputDocument, TraceWriter log)
 {
+	var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
     log.Info($"C# Queue trigger function processed: {crawlRequest.Id}");
     
 	var azureLogger = new AzureLogger(log);
-	
-	var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
 
     var crawler = new Crawler(crawlRequest, azureLogger);
-    crawler.AddUrl("https://www.red-folder.com/sitemap.xml");
+    crawler.AddUrl($"{crawlRequest.Host}/sitemap.xml");
     var crawlResult = crawler.Crawl();
     
     outputDocument = crawlResult;
