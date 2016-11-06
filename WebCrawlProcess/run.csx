@@ -18,6 +18,7 @@ public static void Run(string request, out object outputDocument, TraceWriter lo
 	catch (Exception ex)
 	{
 		log.Info($"Failed to get object - likely wrong format: {ex.Message}");
+		outputDocument = null;
 		return;
 	}
     
