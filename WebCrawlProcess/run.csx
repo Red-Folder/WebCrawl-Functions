@@ -10,8 +10,16 @@ public static void Run(string request, out object outputDocument, TraceWriter lo
 {
     log.Info($"Started");
 
-	//var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
-    //log.Info($"C# Queue trigger function processed: {crawlRequest.Id}");
+	try 
+	{
+		var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
+    	log.Info($"C# Queue trigger function processed: {crawlRequest.Id}");
+	}
+	catch (Exception ex)
+	{
+		log.Info($"Failed to get object - likely wrong format: {ex.Message}");
+		return;
+	}
     
 	//var azureLogger = new AzureLogger(log);
 
