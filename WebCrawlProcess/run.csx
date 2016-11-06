@@ -22,16 +22,17 @@ public static void Run(string request, out object outputDocument, TraceWriter lo
 		return;
 	}
     
-	//var azureLogger = new AzureLogger(log);
+	var azureLogger = new AzureLogger(log);
 
-    //var crawler = new Crawler(crawlRequest, azureLogger);
-    //crawler.AddUrl($"{crawlRequest.Host}/sitemap.xml");
-    //var crawlResult = crawler.Crawl();
+    var crawler = new Crawler(crawlRequest, azureLogger);
+    crawler.AddUrl($"{crawlRequest.Host}/sitemap.xml");
+    var crawlResult = crawler.Crawl();
     
-    log.Info($"Finished");
 
-    //outputDocument = crawlResult;
-	outputDocument = new { id = Guid.NewGuid().ToString() };
+    outputDocument = crawlResult;
+	//outputDocument = new { id = Guid.NewGuid().ToString() };
+
+    log.Info($"Finished");
 }
 
 public class AzureLogger : ILogger
