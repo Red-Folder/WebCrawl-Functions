@@ -15,7 +15,15 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 {
     log.Info($"Request to start WebCrawl");
 
-    var crawlRequest = new CrawlRequest(Guid.NewGuid().ToString(), "https://www.red-folder.com");
+    dynamic data = await req.Content.ReadAsAsync<object>();
+
+    // Set id & host from body data
+    string id = data?.id;
+    id = id ?? Guid.NewGuid().ToString();
+    string host = data?.host;
+    host = host ?? "https://www.red-folder.com";
+
+    var crawlRequest = new CrawlRequest(id, host);
     
 	HttpResponseMessage response = null;
     try
