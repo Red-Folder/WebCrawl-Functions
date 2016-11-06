@@ -8,8 +8,6 @@ using Newtonsoft.Json;
 
 public static void Run(string request, out object outputDocument, TraceWriter log)
 {
-    log.Info($"Started");
-
 	CrawlRequest crawlRequest = null;
 	try 
 	{
@@ -31,9 +29,6 @@ public static void Run(string request, out object outputDocument, TraceWriter lo
     
 
     outputDocument = crawlResult;
-	//outputDocument = new { id = Guid.NewGuid().ToString() };
-
-    log.Info($"Finished");
 }
 
 public class AzureLogger : ILogger
