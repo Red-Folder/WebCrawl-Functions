@@ -10,9 +10,10 @@ public static void Run(string request, out object outputDocument, TraceWriter lo
 {
     log.Info($"Started");
 
+	CrawlRequest crawlRequest = null;
 	try 
 	{
-		var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
+		crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
     	log.Info($"C# Queue trigger function processed: {crawlRequest.Id}");
 	}
 	catch (Exception ex)
