@@ -8,16 +8,21 @@ using Newtonsoft.Json;
 
 public static void Run(string request, out object outputDocument, TraceWriter log)
 {
-	var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
-    log.Info($"C# Queue trigger function processed: {crawlRequest.Id}");
-    
-	var azureLogger = new AzureLogger(log);
+    log.Info($"Started");
 
-    var crawler = new Crawler(crawlRequest, azureLogger);
-    crawler.AddUrl($"{crawlRequest.Host}/sitemap.xml");
-    var crawlResult = crawler.Crawl();
+	//var crawlRequest = JsonConvert.DeserializeObject<CrawlRequest>(request);
+    //log.Info($"C# Queue trigger function processed: {crawlRequest.Id}");
     
-    outputDocument = crawlResult;
+	//var azureLogger = new AzureLogger(log);
+
+    //var crawler = new Crawler(crawlRequest, azureLogger);
+    //crawler.AddUrl($"{crawlRequest.Host}/sitemap.xml");
+    //var crawlResult = crawler.Crawl();
+    
+    log.Info($"Finished");
+
+    //outputDocument = crawlResult;
+	outputDocument = new { id = Guid.NewGuid().ToString() };
 }
 
 public class AzureLogger : ILogger
