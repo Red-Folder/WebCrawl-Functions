@@ -30,60 +30,72 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     string databaseName = "crawlOutput";
     string collectionName = "WebCrawl";
     DocumentClient client;
-    
-    log.Info($"Creating client for: {endpointUri}");
-    client = new DocumentClient(new Uri(endpointUri), primaryKey);
 
-    // Set some common query options
-    FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+    HttpResponseMessage response = null;
 
-    log.Info("Setting up the LINQ query...");
-    IEnumerable<CrawlResults> query;
-    if (id == null || id.Length == 0)
-    {
-        query = client.CreateDocumentQuery<CrawlResults>(UriFactory
-                    .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .OrderByDescending(x => x.Timestamp);
-    }
-    else
-    {
-        query = client.CreateDocumentQuery<CrawlResults>(UriFactory
-                    .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
-                    .Where(x => x.Id == id);
-    }
-
-    log.Info("Running LINQ query...");
-	HttpResponseMessage response = null;
     try
     {
-        var results = query.ToList();
-		if (results.Count() == 0)
-		{
-			log.Info("No results found");
-			response = new HttpResponseMessage(HttpStatusCode.NotFound)
-				{
-					Content = new StringContent("No results found.  If asking for a specific request, try again in 60 seconds as it may still be running.")
-				};
-		}
-		else
-		{
-			var result = results.FirstOrDefault();
-			var message = JsonConvert.SerializeObject(result);
-			log.Info("Returning OK");
-			response = new HttpResponseMessage(HttpStatusCode.OK)
-				{
-					Content = new StringContent(message)
-				};
-			response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-		}
+        log.Info($"Creating client for: {endpointUri}");
+        client = new DocumentClient(new Uri(endpointUri), primaryKey);
+
+        // Set some common query options
+        FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+
+        log.Info("Setting up the LINQ query...");
+        IEnumerable<CrawlResults> query;
+        if (id == null || id.Length == 0)
+        {
+            query = client.CreateDocumentQuery<CrawlResults>(UriFactory
+                        .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+                        .OrderByDescending(x => x.Timestamp);
+        }
+        else
+        {
+            query = client.CreateDocumentQuery<CrawlResults>(UriFactory
+                        .CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+                        .Where(x => x.Id == id);
+        }
+
+        log.Info("Running LINQ query...");
+        try
+        {
+            var results = query.ToList();
+            if (results.Count() == 0)
+            {
+                log.Info("No results found");
+                response = new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent("No results found.  If asking for a specific request, try again in 60 seconds as it may still be running.")
+                };
+            }
+            else
+            {
+                var result = results.FirstOrDefault();
+                var message = JsonConvert.SerializeObject(result);
+                log.Info("Returning OK");
+                response = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(message)
+                };
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            }
+        }
+        catch (Exception ex)
+        {
+            log.Info($"Failed to retrieve results - exception thrown - {ex.Message}");
+            response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+            {
+                Content = new StringContent("An error has occurred.  Refer to the server logs.")
+            };
+        }
     }
     catch (Exception ex)
     {
         log.Info($"Failed to retrieve results - exception thrown - {ex.Message}");
-		response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
-			{
-				Content = new StringContent("An error has occurred.  Refer to the server logs.")
-			};
+        response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+        {
+            Content = new StringContent("An error has occurred.  Refer to the server logs.")
+        };
     }
 
     return response;
