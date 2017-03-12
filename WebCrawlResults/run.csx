@@ -35,8 +35,20 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
     try
     {
-        log.Info($"Creating client for: {endpointUri}");
-        client = new DocumentClient(new Uri(endpointUri), primaryKey);
+        log.Info($"Creating Url for: {endpointUri}");
+        var host = new Uri(endpointUri);
+
+        log.Info($"Creating client for: {host}");
+        client = new DocumentClient(host, primaryKey);
+        
+        if (client == null)
+        {
+            log.Info($"Client null");
+        }
+        else
+        {
+            log.Info($"Client created");
+        }
 
         // Set some common query options
         FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
