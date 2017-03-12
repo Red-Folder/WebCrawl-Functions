@@ -27,6 +27,11 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     string endpointUri = documentDbEndpoint.Split(';')[0].Split('=')[1];
     string primaryKey = documentDbEndpoint.Split(';')[1].Split('=')[1];
 
+    log.Info($"documentDbEndpoint: {documentDbEndpoint}");
+    log.Info($"endpointUri: {endpointUri}");
+    log.Info($"Primarykey: {primaryKey}");
+
+
     string databaseName = "crawlOutput";
     string collectionName = "WebCrawl";
     DocumentClient client;
@@ -38,6 +43,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         log.Info($"Creating Url for: {endpointUri}");
         var host = new Uri(endpointUri);
 
+        
         log.Info($"Creating client for: {host}");
         client = new DocumentClient(host, primaryKey);
         
