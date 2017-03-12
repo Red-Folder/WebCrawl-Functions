@@ -13,9 +13,9 @@ public static async Task Run(TimerInfo timerInfo, TraceWriter log)
     // Convert from connection string to uri & key
     // Doesn't currently appear to be a vary to create a DocumentClient from a connection string
     string documentDbEndpoint = System.Environment.GetEnvironmentVariable("APPSETTING_rfcwebcrawl_DOCUMENTDB");
-    string endpointUri = documentDbEndpoint.Split(';')[0].Split('=')[1];
-    string primaryKey = documentDbEndpoint.Split(';')[1].Split('=')[1];
-
+    string endpointUri = documentDbEndpoint.Split(';')[0].Replace("AccountEndpoint=","");
+    string primaryKey = documentDbEndpoint.Split(';')[1].Replace("AccountKey=","");
+	
     string databaseName = "crawlOutput";
     string collectionName = "WebCrawl";
     DocumentClient client;

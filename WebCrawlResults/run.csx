@@ -27,11 +27,6 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     string endpointUri = documentDbEndpoint.Split(';')[0].Replace("AccountEndpoint=","");
     string primaryKey = documentDbEndpoint.Split(';')[1].Replace("AccountKey=","");
 
-    log.Info($"documentDbEndpoint: {documentDbEndpoint}");
-    log.Info($"endpointUri: {endpointUri}");
-    log.Info($"Primarykey: {primaryKey}");
-
-
     string databaseName = "crawlOutput";
     string collectionName = "WebCrawl";
     DocumentClient client;
