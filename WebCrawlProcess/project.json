@@ -3,7 +3,7 @@
     "net46":{
       "dependencies": {
         "Red-Folder.WebCrawl.Data": "0.1.87",
-		    "Red-Folder.WebCrawl": "0.1.194",
+		    "Red-Folder.WebCrawl": "0.2.5",
 		    "Red-Folder.Logging": "0.1.97"
       }
     }
